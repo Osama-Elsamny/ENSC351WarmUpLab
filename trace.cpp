@@ -88,10 +88,71 @@ void trace_instant_global(char* name){
     traceCount++;
 }
 void trace_object_new(char* name, void* obj_pointer){
+    if(traceCount == maxTrace ){
+        trace_flush();
+    }
+    auto finish = std::chrono::high_resolution_clock::now();
+    auto BeginTime = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+    BeginTime = BeginTime/1000;
+    string temp = "{\"name\": \"";
+    temp.append(name);
+    temp += "\", \"id\": \"";
+    temp.append(obj_pointer);
+    temp += "\", \"ph\": \"";
+    temp.append("N");
+    temp += "\", \"pid\": \"";
+    temp.append(to_string(getpid()));
+    temp += "\", \"tid\": \"";
+    temp.append("1");
+    temp += "\", \"ts\": \"";
+    temp.append(to_string(BeginTime));
+    temp.append("\"}");
+    buffer[traceCount] = temp;
+    traceCount++;
 }
 void trace_object_gone(char* name, void* obj_pointer){
+    if(traceCount == maxTrace ){
+        trace_flush();
+    }
+    auto finish = std::chrono::high_resolution_clock::now();
+    auto BeginTime = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+    BeginTime = BeginTime/1000;
+    string temp = "{\"name\": \"";
+    temp.append(name);
+    temp += "\", \"id\": \"";
+    temp.append(obj_pointer);
+    temp += "\", \"ph\": \"";
+    temp.append("D");
+    temp += "\", \"pid\": \"";
+    temp.append(to_string(getpid()));
+    temp += "\", \"tid\": \"";
+    temp.append("1");
+    temp += "\", \"ts\": \"";
+    temp.append(to_string(BeginTime));
+    temp.append("\"}");
+    buffer[traceCount] = temp;
+    traceCount++;
 }
 void trace_counter(char* name, char* key,char* value){
+    if(traceCount == maxTrace ){
+        trace_flush();
+    }
+    auto finish = std::chrono::high_resolution_clock::now();
+    auto BeginTime = std::chrono::duration_cast<std::chrono::nanoseconds>(finish-start).count();
+    BeginTime = BeginTime/1000;
+    string temp = "{\"name\": \"";
+    temp.append(name);
+    temp += "\", \"ph\": \"";
+    temp.append("C");
+    temp += "\", \"pid\": \"";
+    temp.append(to_string(getpid()));
+    temp += "\", \"tid\": \"";
+    temp.append("1");
+    temp += "\", \"ts\": \"";
+    temp.append(to_string(BeginTime));
+    temp.append("\"}");
+    buffer[traceCount] = temp;
+    traceCount++;   
 }
 void trace_flush(){
     print(1);
